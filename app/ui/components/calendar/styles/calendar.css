@@ -1,0 +1,19 @@
+.rbc-header {
+  @apply !py-2;
+}
+
+
+/* .rbc-day-bg.rbc-today{
+  background: #fff;
+} */
+div.rbc-date-cell {
+  @apply flex justify-center mb-1
+}
+
+div.rbc-date-cell > .rbc-button-link {
+  @apply w-7 h-7 p-1 rounded-full mt-1 text-sm flex justify-center items-center;
+}
+
+div.rbc-date-cell.rbc-now.rbc-current > .rbc-button-link {
+  @apply bg-[#1a73e8] text-white !font-normal;
+}
