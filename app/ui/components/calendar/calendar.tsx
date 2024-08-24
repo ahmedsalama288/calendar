@@ -26,17 +26,17 @@ export default function Calendar({ userSession }: Props) {
   const [date, setDate] = useState(new Date());
   const [userView, setView] = useState<View>(Views.MONTH);
   const [slotInfo, setSlotInfo] = useState<SlotInfo>();
-  const [isAddEventModalOpen, setIsAddEventModalOpen] = useState(false);
+  const [isEventModalOpen, setIsEventModalOpen] = useState(false);
   const [events, setEvents] = useState<StoredEvent[]>([]);
   const [selectedEventData, setSelectedEventData] = useState<StoredEvent>();
   const [eventModalType, setEventModalType] = useState("");
 
   const handleOpenTheEventModal = () => {
-    setIsAddEventModalOpen(true);
+    setIsEventModalOpen(true);
   };
 
   const handleCloseTheEventModal = () => {
-    setIsAddEventModalOpen(false);
+    setIsEventModalOpen(false);
   };
 
   const onNavigate = useCallback(
@@ -67,8 +67,7 @@ export default function Calendar({ userSession }: Props) {
     if (!userEvents) return;
 
     setEvents(userEvents);
-    console.log("hi");
-  }, [userSession, isAddEventModalOpen === false]);
+  }, [userSession, isEventModalOpen === false]);
 
   return (
     <div className=" w-fit max-w-full">
@@ -88,7 +87,7 @@ export default function Calendar({ userSession }: Props) {
         onSelectEvent={(data: StoredEvent) => {
           setSelectedEventData(data);
           setEventModalType("edit");
-          setIsAddEventModalOpen(true);
+          setIsEventModalOpen(true);
         }}
         selectable
       />
@@ -97,7 +96,7 @@ export default function Calendar({ userSession }: Props) {
         props={{
           startDate: slotInfo?.start as Date,
           endDate: slotInfo?.end as Date,
-          isModalOpen: isAddEventModalOpen,
+          isModalOpen: isEventModalOpen,
           onCloseModal: handleCloseTheEventModal,
           view: userView,
           userSession: userSession,
