@@ -4,21 +4,15 @@ import { View } from "react-big-calendar";
 export interface User {
   username: string;
   email: string;
-  events: StoredEvent[];
-}
-export interface FirebaseUsers {
-  [key: string]: User;
+  events: Event[];
 }
 
 export interface Event {
+  id: string;
   title: string;
   start: Date;
   end: Date;
   description?: string;
-}
-
-export interface StoredEvent extends Event {
-  id: string;
 }
 
 export interface EventModalProps {
@@ -28,5 +22,5 @@ export interface EventModalProps {
   onCloseModal: () => void;
   view: View;
   userSession: Session | null;
-  eventData?: StoredEvent;
+  eventData?: Event;
 }
