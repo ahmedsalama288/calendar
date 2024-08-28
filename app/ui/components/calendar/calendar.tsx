@@ -8,12 +8,12 @@ import {
   SlotInfo,
 } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
-import { use, useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import moment from "moment";
 import { dayRangeHeaderFormat } from "@/app/util/utils";
 import { Session } from "next-auth";
 import { getUserEvents } from "@/app/db/db";
-import { StoredEvent } from "@/app/types/types";
+import { Event } from "@/app/types/types";
 import EventFactoryModal from "../event-modal/event-factory-modal";
 
 const localizer = momentLocalizer(moment);
@@ -27,15 +27,15 @@ export default function Calendar({ userSession }: Props) {
   const [userView, setView] = useState<View>(Views.MONTH);
   const [slotInfo, setSlotInfo] = useState<SlotInfo>();
   const [isEventModalOpen, setIsEventModalOpen] = useState(false);
-  const [events, setEvents] = useState<StoredEvent[]>([]);
-  const [selectedEventData, setSelectedEventData] = useState<StoredEvent>();
+  const [events, setEvents] = useState<Event[]>([]);
+  const [selectedEventData, setSelectedEventData] = useState<Event>();
   const [eventModalType, setEventModalType] = useState("");
 
-  const handleOpenTheEventModal = () => {
+  const handleOpenEventModal = () => {
     setIsEventModalOpen(true);
   };
 
-  const handleCloseTheEventModal = () => {
+  const handleCloseEventModal = () => {
     setIsEventModalOpen(false);
   };
 
@@ -43,6 +43,7 @@ export default function Calendar({ userSession }: Props) {
     (newDate: Date) => setDate(newDate),
     [setDate]
   );
+
   const onView = useCallback((newView: View) => setView(newView), []);
 
   const { formats } = useMemo(
@@ -54,12 +55,17 @@ export default function Calendar({ userSession }: Props) {
     }),
     []
   );
-  console.log("suuuuu");
 
   const onSelectSlot = useCallback((slotInfo: SlotInfo) => {
     setSlotInfo(slotInfo);
     setEventModalType("add");
-    handleOpenTheEventModal();
+    handleOpenEventModal();
+  }, []);
+
+  const onClickEvent = useCallback((data: Event) => {
+    setSelectedEventData(data);
+    setEventModalType("edit");
+    setIsEventModalOpen(true);
   }, []);
 
   useEffect(() => {
@@ -84,11 +90,7 @@ export default function Calendar({ userSession }: Props) {
         onNavigate={onNavigate}
         onSelectSlot={onSelectSlot}
         formats={formats}
-        onSelectEvent={(data: StoredEvent) => {
-          setSelectedEventData(data);
-          setEventModalType("edit");
-          setIsEventModalOpen(true);
-        }}
+        onSelectEvent={onClickEvent}
         selectable
       />
       <EventFactoryModal
@@ -97,7 +99,7 @@ export default function Calendar({ userSession }: Props) {
           startDate: slotInfo?.start as Date,
           endDate: slotInfo?.end as Date,
           isModalOpen: isEventModalOpen,
-          onCloseModal: handleCloseTheEventModal,
+          onCloseModal: handleCloseEventModal,
           view: userView,
           userSession: userSession,
           eventData: selectedEventData,
